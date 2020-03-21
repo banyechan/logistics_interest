@@ -1,5 +1,6 @@
 package com.chyer.logistics_interest.controller;
 
+
 import com.alibaba.fastjson.JSONObject;
 import com.chyer.logistics_interest.service.BaiduMapService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/home")
-public class HomeController {
+@RequestMapping("/baidu")
+public class BaiDuMapController {
+
 
     @Autowired
     private BaiduMapService baiduMapService;
@@ -24,20 +26,7 @@ public class HomeController {
     public JSONObject aroundSerch(){
 
 
-    return null;
+        return null;
     }
-
-
-
-
-
-
-    //http://api.map.baidu.com/place/v2/search?query=ATM机&tag=银行&region=北京&output=json&ak=FIkaMovHOv5VAG1Ew9BbjKs8M6w7LvN7 //GET请求
-
-
-
-
-
-
 
 }
