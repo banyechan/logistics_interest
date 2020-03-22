@@ -8,6 +8,7 @@ import java.io.Serializable;
 @Data
 @ToString
 public class DistrictSerchRequest implements Serializable {
+    private static final long serialVersionUID = -6348516788607808624L;
 
     private String key;
     private String keywords;

@@ -1,6 +1,6 @@
 package com.chyer.logistics_interest.serviceImpl;
 
-import com.alibaba.fastjson.JSON;
+
 import com.chyer.logistics_interest.entity.AreaRegionSerchRequest;
 import com.chyer.logistics_interest.entity.CircularRegionSerchRequest;
 import com.chyer.logistics_interest.entity.PlaceDetailInfoRequest;
