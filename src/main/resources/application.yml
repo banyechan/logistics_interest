@@ -1,0 +1,17 @@
+
+server:
+  port: 2020
+
+spring:
+  application:
+    name: logistics_interest
+  resources:
+    static-locations: classpath:/
+
+baidu:
+  map:
+    ak: FIkaMovHOv5VAG1Ew9BbjKs8M6w7LvN7
+
+gould:
+  map:
+    key: d73af80e885c11bd5bf046a0e612225e
