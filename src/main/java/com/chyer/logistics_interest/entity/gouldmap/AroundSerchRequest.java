@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class AroundSerchRequest implements Serializable {
     private static final long serialVersionUID = 6946295993629778308L;
 
-    private String key;
+    //private String key;
     private String keywords;
     private String location;
     private String types;

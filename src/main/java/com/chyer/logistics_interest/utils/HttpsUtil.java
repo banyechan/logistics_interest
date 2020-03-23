@@ -17,6 +17,8 @@ import org.apache.http.util.EntityUtils;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,7 +35,9 @@ public class HttpsUtil {
         try {
             CloseableHttpClient httpClient= HttpClients.createDefault();
             //创建GET对象
-            HttpGet httpGet = new HttpGet(urlString);
+            URL url = new URL(urlString);
+            URI uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(), null);
+            HttpGet httpGet = new HttpGet(uri);
             httpGet.addHeader("Content-type","application/json; charset=utf-8");
             httpGet.setHeader("Accept", "application/json");
 
