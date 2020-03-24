@@ -1,12 +1,20 @@
 package com.chyer.logistics_interest.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.chyer.logistics_interest.config.CommonConstant;
+import com.chyer.logistics_interest.entity.HotPower;
 import com.chyer.logistics_interest.entity.gouldmap.*;
 import com.chyer.logistics_interest.service.GouldMapService;
 import com.chyer.logistics_interest.utils.R;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
 @RestController
 @RequestMapping("/gould")
 public class GouldMapController {
@@ -87,6 +95,78 @@ public class GouldMapController {
 
         return new R(circleTraffic.getStatus(),new Throwable(circleTraffic.getInfo()));
     }
+
+
+    //全国范围 关键字搜索
+    @GetMapping("/countrySerch")
+    public R countryKeywordsSerch(){
+        List<String> citys = CommonConstant.getCityList();
+        List<KeywordsSerchResponse.Poi> totalPois = new ArrayList<KeywordsSerchResponse.Poi>();
+        KeywordsSerchRequest request = new KeywordsSerchRequest();
+        request.setKeywords("物流点|物流仓储");
+        request.setOutput("json");
+        request.setOffset("20");
+        request.setPage("1");
+        for(String city : citys){
+            request.setCity(city);
+            String result = gouldMapService.keywordsSerch(request);
+            KeywordsSerchResponse keywordsSerch = JSON.parseObject(result, KeywordsSerchResponse.class);
+            if(keywordsSerch.getStatus().equals(1)){
+                totalPois.addAll(keywordsSerch.getPois());
+                log.info(city + "--- 查询出的记录总数=" + keywordsSerch.getPois().size());
+            }
+        }
+        log.info("--- 查询出的记录总数=" + totalPois.size());
+
+
+        return new R(totalPois);
+    }
+
+
+    //全国范围 关键字搜索  热力图值形式
+    @GetMapping("/countrySerchHot")
+    public R countrySerchHot(){
+        List<String> citys = CommonConstant.getCityList();
+        List<HotPower> totalHotPowerList = new ArrayList<HotPower>();
+        KeywordsSerchRequest request = new KeywordsSerchRequest();
+        request.setKeywords("物流点|物流仓储");
+        request.setOutput("json");
+        request.setOffset("20");
+        request.setPage("1");
+        for(String city : citys){
+            request.setCity(city);
+            String result = gouldMapService.keywordsSerch(request);
+            KeywordsSerchResponse keywordsSerch = JSON.parseObject(result, KeywordsSerchResponse.class);
+            if(keywordsSerch.getStatus().equals(1)){
+                List<KeywordsSerchResponse.Poi> temPois = keywordsSerch.getPois();
+                if(temPois != null && temPois.size() > 0){
+                    for(KeywordsSerchResponse.Poi tem : temPois){
+                        String location = tem.getLocation();
+                        if(StringUtils.isNotBlank(location)){
+                            String[] locaArr = location.split(",");
+                            HotPower hotPower = new HotPower();
+                            hotPower.setLng(locaArr[0]);
+                            hotPower.setLat(locaArr[1]);
+                            hotPower.setCount(0);
+                            totalHotPowerList.add(hotPower);
+                        }
+
+
+                    }
+                }
+                log.info(city + "--- 查询出的记录总数=" + keywordsSerch.getPois().size());
+            }
+        }
+        log.info("--- 查询出的记录总数=" + totalHotPowerList.size());
+
+
+        return new R(totalHotPowerList);
+    }
+
+
+
+
+
 
 
     //某点热力值查询

@@ -38,7 +38,7 @@ public class KeywordsSerchResponse extends ParentResponse{
     }
 
     @Data
-    private static class Poi{
+    public static class Poi{
         private String id;
         private String parent;
         private String name;
