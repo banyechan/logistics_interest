@@ -5,6 +5,10 @@ import lombok.ToString;
 
 import java.util.List;
 
+/**
+ * 此类 用于封装 <关键字搜索> 返回的响应结果
+ *     具体属性意义可参考官方文档
+ */
 @Data
 @ToString
 public class KeywordsSerchResponse extends ParentResponse{

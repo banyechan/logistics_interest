@@ -5,6 +5,10 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
+/**
+ * 此类 用于封装 <行政区划区域检索> 所需的请求参数
+ *     具体属性意义可参考官方文档
+ */
 @Data
 @ToString
 public class DistrictSerchRequest implements Serializable {

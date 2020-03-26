@@ -1,8 +1,12 @@
-package com.chyer.logistics_interest.entity;
+package com.chyer.logistics_interest.entity.baidumap;
 
 import lombok.Data;
 import lombok.ToString;
 
+/**
+ * 此类 用于封装 <IP定位> 返回的响应结果
+ *     具体属性意义可参考官方文档
+ */
 @Data
 @ToString
 public class IpLocationResponse extends CommonResponse{

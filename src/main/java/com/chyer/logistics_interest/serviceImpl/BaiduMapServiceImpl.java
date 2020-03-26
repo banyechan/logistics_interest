@@ -1,11 +1,12 @@
 package com.chyer.logistics_interest.serviceImpl;
 
 
-import com.chyer.logistics_interest.entity.AreaRegionSerchRequest;
-import com.chyer.logistics_interest.entity.CircularRegionSerchRequest;
-import com.chyer.logistics_interest.entity.PlaceDetailInfoRequest;
+import com.chyer.logistics_interest.entity.baidumap.AreaRegionSerchRequest;
+import com.chyer.logistics_interest.entity.baidumap.CircularRegionSerchRequest;
+import com.chyer.logistics_interest.entity.baidumap.PlaceDetailInfoRequest;
 import com.chyer.logistics_interest.service.BaiduMapService;
 import com.chyer.logistics_interest.utils.HttpsUtil;
+import com.chyer.logistics_interest.utils.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,7 @@ public class BaiduMapServiceImpl implements BaiduMapService {
     public String circularRegionSerch(CircularRegionSerchRequest record) {
         StringBuilder sb = new StringBuilder("http://api.map.baidu.com/place/v2/search");
         sb.append("?ak=" + BAIDU_AK);
-        String parameterUrl = getParameterUrl(record);
+        String parameterUrl = ObjectUtil.getParameterUrl(record);
         sb.append(parameterUrl);
         return HttpsUtil.doGet(sb.toString());
     }
@@ -64,7 +65,7 @@ public class BaiduMapServiceImpl implements BaiduMapService {
     public String areaRegionSerch(AreaRegionSerchRequest record) {
         StringBuilder sb = new StringBuilder("http://api.map.baidu.com/place/v2/search");
         sb.append("?ak=" + BAIDU_AK);
-        String parameterUrl = getParameterUrl(record);
+        String parameterUrl = ObjectUtil.getParameterUrl(record);
         sb.append(parameterUrl);
         return HttpsUtil.doGet(sb.toString());
     }
@@ -79,50 +80,9 @@ public class BaiduMapServiceImpl implements BaiduMapService {
     public String placeDetailInfo(PlaceDetailInfoRequest record) {
         StringBuilder sb = new StringBuilder("http://api.map.baidu.com/place/v2/detail");
         sb.append("?ak=" + BAIDU_AK);
-        String parameterUrl = getParameterUrl(record);
+        String parameterUrl = ObjectUtil.getParameterUrl(record);
         sb.append(parameterUrl);
         return HttpsUtil.doGet(sb.toString());
-    }
-
-
-
-
-
-
-
-    public String getParameterUrl(Object object){
-        StringBuilder sb = new StringBuilder();
-        Field[] fields=object.getClass().getDeclaredFields();
-        if(fields != null && fields.length > 0){
-            for(Field tem : fields){
-                String fieldName = tem.getName();
-                if(!"serialVersionUID".equals(fieldName)){
-                    String fieldValue = getValueByFieldName(fieldName,object);
-                    if(StringUtils.isNotBlank(fieldValue) && !"ak".equals(fieldName)){
-                        sb.append("&").append(fieldName).append("=").append(fieldValue);
-                    }
-                }
-            }
-        }
-        log.info("---getParameterUrl  sb=" + sb.toString());
-        return sb.toString();
-    }
-
-    private String getValueByFieldName(String fieldName, Object object) {
-        String result = null;
-        try {
-            String firstLetter = fieldName.substring(0, 1).toUpperCase();
-            String getter = "get" + firstLetter + fieldName.substring(1);
-            Method method = object.getClass().getMethod(getter, new Class[] {});
-            Object value = method.invoke(object, new Object[] {});
-            if(value != null){
-                result = value.toString();
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-            return null;
-        }
-        return result;
     }
 
 }

@@ -3,8 +3,13 @@ package com.chyer.logistics_interest.config;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  公共常量（不会经常改变的量）
+ *
+ */
 public class CommonConstant {
 
+    //全国所有省的名字
     public static List<String> getCityList(){
         List<String> cityList = new ArrayList<String>();
         cityList.add("上海");
@@ -43,10 +48,5 @@ public class CommonConstant {
         cityList.add("澳门");
         return cityList;
     }
-
-
-
-
-
 
 }

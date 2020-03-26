@@ -6,9 +6,16 @@ import org.apache.commons.lang3.StringUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+/**
+ *  Object工具类
+ */
 @Slf4j
 public class ObjectUtil {
 
+    /**
+     *获取某个对象所有字段拼接的 url
+     * eg: &name=zhangsan&age=12&sex=man
+     */
     public static String getParameterUrl(Object object){
         StringBuilder sb = new StringBuilder();
         Field[] fields=object.getClass().getDeclaredFields();
@@ -27,6 +34,7 @@ public class ObjectUtil {
         return sb.toString();
     }
 
+    //通过字段的名字,获取该字段的值
     private static String getValueByFieldName(String fieldName, Object object) {
         String result = null;
         try {

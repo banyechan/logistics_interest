@@ -14,16 +14,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  高德地图的接口调式 controller
+ *   说明：每个接口的具体功能介绍可参考高德地图的官方文档
+ *   url: https://lbs.amap.com/api/webservice/summary
+ */
 @Slf4j
 @RestController
 @RequestMapping("/gould")
 public class GouldMapController {
 
-
     @Autowired
     private GouldMapService gouldMapService;
 
-    //ip定位
+    //ip定位 （根据用户输入的IP地址，能够快速的帮用户定位IP的所在位置）
     @GetMapping("/ip")
     public R ipLocation(@RequestParam("ip")String ip){
         String result = gouldMapService.ipLocation(ip);
@@ -37,6 +41,7 @@ public class GouldMapController {
 
 
     //行政区域查询
+    // 根据用户输入的搜索条件可以帮助用户快速的查找特定的行政区域信息
     @PostMapping("/districtSerch")
     public R districtSerch(@RequestBody DistrictSerchRequest record){
         String result = gouldMapService.districtSerch(record);
@@ -49,6 +54,7 @@ public class GouldMapController {
     }
 
     //关键字搜索
+    //  通过用POI的关键字进行条件搜索
     @PostMapping("/keywordsSerch")
     public R keywordsSerch(@RequestBody KeywordsSerchRequest record){
         String result = gouldMapService.keywordsSerch(record);
@@ -61,6 +67,7 @@ public class GouldMapController {
     }
 
     //周边搜索
+    //  在用户传入经纬度坐标点附近，在设定的范围内，按照关键字或POI类型搜索
     @PostMapping("/aroundSerch")
     public R aroundSerch(@RequestBody AroundSerchRequest record){
         String result = gouldMapService.aroundSerch(record);
@@ -73,6 +80,7 @@ public class GouldMapController {
     }
 
     //指定线路交通态势
+    // 根据用户输入的内容能够返回希望查询的交通态势情况
     @PostMapping("/roadTraffic")
     public R roadTraffic(@RequestBody RoadTrafficRequest record){
         String result = gouldMapService.roadTraffic(record);
@@ -85,6 +93,7 @@ public class GouldMapController {
     }
 
     //圆形区域交通态势
+    // 根据用户输入的内容能够返回希望查询的交通态势情况,，路况信息2分钟更新一次
     @PostMapping("/circleTraffic")
     public R circleTraffic(@RequestBody CircleTrafficRequest record){
         String result = gouldMapService.circleTraffic(record);
@@ -117,8 +126,6 @@ public class GouldMapController {
             }
         }
         log.info("--- 查询出的记录总数=" + totalPois.size());
-
-
         return new R(totalPois);
     }
 
@@ -158,27 +165,24 @@ public class GouldMapController {
             }
         }
         log.info("--- 查询出的记录总数=" + totalHotPowerList.size());
-
-
         return new R(totalHotPowerList);
     }
 
 
-
-
-
-
-
-    //某点热力值查询
-    @GetMapping("/hotValue")
-    public R hotValue(@RequestParam("ip")String ip){
-        String result = gouldMapService.ipLocation(ip);
-        IpLocationResponse ipLocation = JSON.parseObject(result, IpLocationResponse.class);
-        if(ipLocation.getStatus().equals(1)){
-            return new R(ipLocation,"success");
+    //ID查询
+    //  通过POI ID，查询某个POI详情
+    @GetMapping("/placeInfo")
+    public R placeInfo(@RequestParam("id")String id){
+        String result = gouldMapService.placeDetailInfo(id);
+        log.info("--- result = " + result);
+        PlaceInfoResponse detailInfo = JSON.parseObject(result, PlaceInfoResponse.class);
+        log.info("--- detailInfo = " + detailInfo.toString());
+        if(detailInfo.getStatus().equals(1)){
+            return new R(detailInfo,"success");
         }
 
-        return new R(ipLocation.getStatus(),new Throwable(ipLocation.getInfo()));
+        return new R(detailInfo.getStatus(),new Throwable(detailInfo.getInfo()));
     }
+
 
 }

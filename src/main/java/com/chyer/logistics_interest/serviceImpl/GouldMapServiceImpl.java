@@ -102,9 +102,18 @@ public class GouldMapServiceImpl implements GouldMapService {
         return HttpsUtil.doGet(sb.toString());
     }
 
-
+    /**
+     *  https://restapi.amap.com/v3/place/detail?parameters
+     *  请求方式  GET
+     * @param id
+     * @return
+     */
     @Override
-    public String placeDetailInfo() {
-        return null;
+    public String placeDetailInfo(String id) {
+        StringBuilder sb = new StringBuilder("https://restapi.amap.com/v3/place/detail");
+        sb.append("?key=" + GOULD_KEY);
+        sb.append("&id=").append(id);
+        sb.append("&output=json");
+        return HttpsUtil.doGet(sb.toString());
     }
 }

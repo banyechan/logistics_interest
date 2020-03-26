@@ -2,13 +2,18 @@ package com.chyer.logistics_interest.controller;
 
 
 import com.alibaba.fastjson.JSON;
-import com.chyer.logistics_interest.entity.*;
+import com.chyer.logistics_interest.entity.baidumap.*;
 import com.chyer.logistics_interest.service.BaiduMapService;
 import com.chyer.logistics_interest.utils.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ *  百度地图的接口调式的 controller
+ *  说明：每个接口的具体功能介绍可参考百度地图的官方文档
+ *   url: http://lbsyun.baidu.com/index.php?title=webapi
+ */
 @Slf4j
 @RestController
 @RequestMapping("/baidu")
@@ -16,12 +21,6 @@ public class BaiDuMapController {
 
     @Autowired
     private BaiduMapService baiduMapService;
-
-    @RequestMapping("/index")
-    public String welcome(){
-        String result = "春江潮水连海平，海上明月共潮生。";
-        return result;
-    }
 
     //ip定位
     @GetMapping("ip")
@@ -59,8 +58,9 @@ public class BaiDuMapController {
         return new R(areaRegion.getStatus(),new Throwable(areaRegion.getMessage()));
     }
 
+    //地点详情检索
     @PostMapping("/placeDetailInfo")
-    public R areaRegionSerch(@RequestBody PlaceDetailInfoRequest placeDetailInfoRequest){
+    public R placeDetailInfo(@RequestBody PlaceDetailInfoRequest placeDetailInfoRequest){
         String result = baiduMapService.placeDetailInfo(placeDetailInfoRequest);
         PlaceDetailInfoResponse detailInfo = JSON.parseObject(result, PlaceDetailInfoResponse.class);
         if(detailInfo.getStatus().equals(0)){

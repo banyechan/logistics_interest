@@ -1,7 +1,7 @@
 package com.chyer.logistics_interest.utils;
+
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -13,15 +13,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+
 
 @Slf4j
 public class HttpsUtil {
@@ -53,7 +47,7 @@ public class HttpsUtil {
             response.close();
             httpClient.close();
         } catch (Exception e) {
-            log.info("发送 POST 请求出现异常！" + e);
+            log.info("发送 GET 请求出现异常！" + e);
             e.printStackTrace();
         }
         return result;
@@ -85,60 +79,9 @@ public class HttpsUtil {
     }
 
 
-//    public static String createJumpHtml(TradeBean data, String charset,String url) throws Exception {
-//        StringBuffer jumpHtml = new StringBuffer("");
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("head",data.getHead());
-//        map.put("body",data.getBody());
-//        if(!"".equals(url)) {
-//            logger.info("开始创建form表单提交跳转页面-->");
-//            jumpHtml.append("<html>");
-//            String head = "<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=" + charset + "\" pageEncoding=\"" + charset + "\" />";
-//            jumpHtml.append(head);
-//            jumpHtml.append("<title>loading</title>");
-//            jumpHtml.append("<style type=\"text/css\">");
-//            jumpHtml.append("body{margin:200px auto;font-family: \"宋体\", Arial;font-size: 12px;color: #369;text-align: center;}");
-//            jumpHtml.append("#1{height:auto; width:78px; margin:0 auto;}");
-//            jumpHtml.append("#2{height:auto; width:153px; margin:0 auto;}");
-//            jumpHtml.append("vertical-align: bottom;}");
-//            jumpHtml.append("</style>");
-//            jumpHtml.append("</head>");
-//            jumpHtml.append("<body>");
-//            jumpHtml.append("<div id=\"3\">交易处理中...</div>");
-//            jumpHtml.append("<form name=\"forwardForm\" action=\"").append(url).append("\" method=\"POST\"><div style=\"display:none\">");
-//            logger.info("WebUtils genForwardHtml::url=" + url);
-//            Iterator keyIterator = map.keySet().iterator();
-//
-//            while(keyIterator.hasNext()) {
-//                Object key = keyIterator.next();
-//                jumpHtml.append("<textarea name=\"").append(key.toString()).append("\">").append((String)map.get(key)).append("</textarea>");
-//                logger.info("创建跳转页面参数:" + key.toString() + "=" + map.get(key));
-//            }
-//            jumpHtml.append("</div></form>");
-//            jumpHtml.append("<SCRIPT LANGUAGE=\"Javascript\">");
-//            jumpHtml.append("    document.forwardForm.submit();");
-//            jumpHtml.append("</SCRIPT>");
-//            jumpHtml.append("</body>");
-//            jumpHtml.append("</html>");
-//            logger.info("form表单提交跳转页面创建完成");
-//        }
-//        return jumpHtml.toString();
-//    }
-
-
     public static void main(String[] args) {
-//                Header[] headers = response.getAllHeaders();
-//                if(headers != null && headers.length > 0){
-//                    for(Header tem : headers){
-//                        log.info("--- header name =" + tem.getName() +"---- value="+tem.getValue());
-//                    }
-//                }
         String urlString = "http://api.map.baidu.com/location/ip?ak=FIkaMovHOv5VAG1Ew9BbjKs8M6w7LvN7&coor=bd09ll";
         doGet(urlString);
     }
-
-
-
-
 
 }

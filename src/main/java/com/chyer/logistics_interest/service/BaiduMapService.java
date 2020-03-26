@@ -1,10 +1,11 @@
 package com.chyer.logistics_interest.service;
 
-import com.alibaba.fastjson.JSON;
-import com.chyer.logistics_interest.entity.AreaRegionSerchRequest;
-import com.chyer.logistics_interest.entity.CircularRegionSerchRequest;
-import com.chyer.logistics_interest.entity.PlaceDetailInfoRequest;
 
+import com.chyer.logistics_interest.entity.baidumap.AreaRegionSerchRequest;
+import com.chyer.logistics_interest.entity.baidumap.CircularRegionSerchRequest;
+import com.chyer.logistics_interest.entity.baidumap.PlaceDetailInfoRequest;
+
+//百度地图的service接口
 public interface BaiduMapService {
 
     //ip定位

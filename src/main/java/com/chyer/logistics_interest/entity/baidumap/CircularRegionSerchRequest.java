@@ -1,7 +1,11 @@
-package com.chyer.logistics_interest.entity;
+package com.chyer.logistics_interest.entity.baidumap;
 
 import lombok.Data;
 
+/**
+ * 此类 用于封装 <圆形区域检索> 所需的请求参数
+ *     具体属性意义可参考官方文档
+ */
 @Data
 public class CircularRegionSerchRequest extends CommonRequest {
     private static final long serialVersionUID = 6254765400694795192L;

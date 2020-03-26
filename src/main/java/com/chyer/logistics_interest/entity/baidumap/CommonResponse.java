@@ -1,9 +1,13 @@
-package com.chyer.logistics_interest.entity;
+package com.chyer.logistics_interest.entity.baidumap;
 
 import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ *   百度地图所有请求响应的父类
+ *     --所有响应结果共有的属性
+ */
 @Data
 public class CommonResponse implements Serializable {
 

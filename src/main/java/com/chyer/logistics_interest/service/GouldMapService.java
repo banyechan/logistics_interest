@@ -2,6 +2,7 @@ package com.chyer.logistics_interest.service;
 
 import com.chyer.logistics_interest.entity.gouldmap.*;
 
+//高德地图的service接口
 public interface GouldMapService {
 
     //ip定位
@@ -22,11 +23,7 @@ public interface GouldMapService {
     //圆形区域交通态势
     String circleTraffic(CircleTrafficRequest record);
 
-
-
-
-
     //地点详情检索服务
-    String placeDetailInfo( );
+    String placeDetailInfo(String id);
 
 }

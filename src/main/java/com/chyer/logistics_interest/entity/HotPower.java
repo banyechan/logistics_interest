@@ -5,6 +5,9 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
+/**
+ *  此类 用于封装 热力图 所需的参数
+ */
 @Data
 @ToString
 public class HotPower implements Serializable {
