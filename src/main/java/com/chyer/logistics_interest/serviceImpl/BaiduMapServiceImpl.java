@@ -9,6 +9,7 @@ import com.chyer.logistics_interest.utils.HttpsUtil;
 import com.chyer.logistics_interest.utils.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -18,9 +19,11 @@ import java.lang.reflect.Method;
 @Service
 public class BaiduMapServiceImpl implements BaiduMapService {
 
-    //@Value("baidu.map.ak")
-    //private String baidu_ak;
+    // 可以通过配置文件的方式读取ak
+    @Value("${baidu.map.ak}")
+    private String baidu_ak;
 
+    //直接在代码中写死，不易于扩展
     private final String BAIDU_AK = "FIkaMovHOv5VAG1Ew9BbjKs8M6w7LvN7";
 
     @Override

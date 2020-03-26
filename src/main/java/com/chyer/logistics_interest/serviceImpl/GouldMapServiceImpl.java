@@ -4,10 +4,14 @@ import com.chyer.logistics_interest.entity.gouldmap.*;
 import com.chyer.logistics_interest.service.GouldMapService;
 import com.chyer.logistics_interest.utils.HttpsUtil;
 import com.chyer.logistics_interest.utils.ObjectUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GouldMapServiceImpl implements GouldMapService {
+
+    @Value("${gould.map.key}")
+    private String gaode_key;
 
     private final String GOULD_KEY = "d73af80e885c11bd5bf046a0e612225e";
 
