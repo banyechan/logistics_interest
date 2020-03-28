@@ -9,6 +9,15 @@ import java.util.List;
  */
 public class CommonConstant {
 
+    //关键词
+    public static List<String> keywordList(){
+        List<String> keywordList = new ArrayList<String>();
+        keywordList.add("邮政速递|物流速递|物流仓储场地");
+        keywordList.add("火车站|火车检查站");
+        keywordList.add("机场货运|货运火车站|货运港口码头");
+        return keywordList;
+    }
+
     //全国所有省的名字
     public static List<String> getCityList(){
         List<String> cityList = new ArrayList<String>();
