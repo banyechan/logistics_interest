@@ -10,6 +10,16 @@ import java.util.List;
 public class CommonConstant {
 
     //关键词
+    public static String getKeyword() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("邮政速递|物流速递|物流仓储场地|");
+        sb.append("火车站|火车检查站|");
+        sb.append("机场货运|货运火车站|货运港口码头");
+        return sb.toString();
+    }
+
+
+    //关键词 集合
     public static List<String> keywordList(){
         List<String> keywordList = new ArrayList<String>();
         keywordList.add("邮政速递|物流速递|物流仓储场地");
@@ -50,11 +60,11 @@ public class CommonConstant {
         cityList.add("甘肃");
         cityList.add("青海");
         cityList.add("宁夏");
-        cityList.add("新疆");
-        cityList.add("海南");
-        cityList.add("台湾");
-        cityList.add("香港特别行政区");
-        cityList.add("澳门");
+        cityList.add("新疆"); //30
+        //cityList.add("海南");
+        //cityList.add("台湾");
+        //cityList.add("香港特别行政区");
+        //cityList.add("澳门");
         return cityList;
     }
 

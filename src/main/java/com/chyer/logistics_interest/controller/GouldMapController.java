@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  *  高德地图的接口调式 controller
@@ -106,68 +107,194 @@ public class GouldMapController {
     }
 
 
-    //全国范围 关键字搜索
+    //全国范围 关键字搜索      单线程处理   每个省份返回20条数据
+//    @GetMapping("/countrySerch")
+//    public R singleCountryKeywordsSerch(){
+//        String keyword = CommonConstant.getKeyword();
+//        List<String> citys = CommonConstant.getCityList();
+//        List<KeywordsSerchResponse.Poi> totalPois = new ArrayList<KeywordsSerchResponse.Poi>();
+//        KeywordsSerchRequest request = new KeywordsSerchRequest();
+//        request.setKeywords(keyword);
+//        request.setOutput("json");
+//        request.setOffset("20");
+//        request.setPage("1");
+//        for(String city : citys){
+//            request.setCity(city);
+//            String result = gouldMapService.keywordsSerch(request);
+//            KeywordsSerchResponse keywordsSerch = JSON.parseObject(result, KeywordsSerchResponse.class);
+//            if(keywordsSerch.getStatus().equals(1)){
+//                totalPois.addAll(keywordsSerch.getPois());
+//                log.info(city + "--- 查询出的记录总数=" + keywordsSerch.getPois().size());
+//            }
+//        }
+//        log.info("--- 查询出的记录总数=" + totalPois.size());
+//        return new R(totalPois);
+//    }
+
+    /**
+     * 全国范围 关键字搜索
+     * <多线程处理>
+     * 因关键词拼接在一起查询不合理，故把关键字进行分类.现分三类，开三个线程，每个线程查一类关键字，
+     * 把多线程的结果汇总以后，返回前端
+     * 逻辑为： 每个省份，每一类关键词 返回20条数据，即每个省份共返回60条数据
+     * 技术点： CountDownLatch  可以查一下相关知识
+     */
     @GetMapping("/countrySerch")
-    public R countryKeywordsSerch(){
+    public R countrySerchMutiThread() {
+        long startTime = System.currentTimeMillis();
+        List<String> keywords = CommonConstant.keywordList();
         List<String> citys = CommonConstant.getCityList();
         List<KeywordsSerchResponse.Poi> totalPois = new ArrayList<KeywordsSerchResponse.Poi>();
-        KeywordsSerchRequest request = new KeywordsSerchRequest();
-        request.setKeywords("物流点|物流仓储");
-        request.setOutput("json");
-        request.setOffset("20");
-        request.setPage("1");
-        for(String city : citys){
-            request.setCity(city);
-            String result = gouldMapService.keywordsSerch(request);
-            KeywordsSerchResponse keywordsSerch = JSON.parseObject(result, KeywordsSerchResponse.class);
-            if(keywordsSerch.getStatus().equals(1)){
-                totalPois.addAll(keywordsSerch.getPois());
-                log.info(city + "--- 查询出的记录总数=" + keywordsSerch.getPois().size());
-            }
+        final CountDownLatch countDownLatch = new CountDownLatch(3); //开3个线程
+
+        for (int i = 0; i < 3; i++) {
+            final int num = i;
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        String temKey = keywords.get(num);
+                        KeywordsSerchRequest request = new KeywordsSerchRequest();
+                        request.setOutput("json");
+                        request.setOffset("20");
+                        request.setPage("1");
+                        request.setKeywords(temKey);
+                        for (String city : citys) {
+                            request.setCity(city);
+                            String result = gouldMapService.keywordsSerch(request);
+                            KeywordsSerchResponse keywordsSerch = JSON.parseObject(result, KeywordsSerchResponse.class);
+                            if (keywordsSerch.getStatus().equals(1)) {
+                                totalPois.addAll(keywordsSerch.getPois());
+                                log.info(city + "--- 查询出的记录总数=" + keywordsSerch.getPois().size());
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    countDownLatch.countDown();
+                }
+            }).start();
+        }
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         log.info("--- 查询出的记录总数=" + totalPois.size());
+        long endTime = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+        log.info("--- 运行总时间=" + totalTime);
         return new R(totalPois);
     }
 
 
     //全国范围 关键字搜索  热力图值形式
+//    @GetMapping("/countrySerchHot")
+//    public R singleCountrySerchHot(){
+//        String keyword = CommonConstant.getKeyword();
+//        List<String> citys = CommonConstant.getCityList();
+//        List<HotPower> totalHotPowerList = new ArrayList<HotPower>();
+//        KeywordsSerchRequest request = new KeywordsSerchRequest();
+//        request.setKeywords(keyword);
+//        request.setOutput("json");
+//        request.setOffset("20");
+//        request.setPage("1");
+//        for(String city : citys){
+//            request.setCity(city);
+//            String result = gouldMapService.keywordsSerch(request);
+//            KeywordsSerchResponse keywordsSerch = JSON.parseObject(result, KeywordsSerchResponse.class);
+//            if(keywordsSerch.getStatus().equals(1)){
+//                List<KeywordsSerchResponse.Poi> temPois = keywordsSerch.getPois();
+//                if(temPois != null && temPois.size() > 0){
+//                    for(KeywordsSerchResponse.Poi tem : temPois){
+//                        String location = tem.getLocation();
+//                        if(StringUtils.isNotBlank(location)){
+//                            String[] locaArr = location.split(",");
+//                            HotPower hotPower = new HotPower();
+//                            hotPower.setLng(locaArr[0]);
+//                            hotPower.setLat(locaArr[1]);
+//                            hotPower.setCount(0);
+//                            totalHotPowerList.add(hotPower);
+//                        }
+//
+//
+//                    }
+//                }
+//                log.info(city + "--- 查询出的记录总数=" + keywordsSerch.getPois().size());
+//            }
+//        }
+//        log.info("--- 查询出的记录总数=" + totalHotPowerList.size());
+//        return new R(totalHotPowerList);
+//    }
+
+
+    /**
+     * 全国范围 关键字搜索   热力图值形式
+     * <多线程处理>
+     * 因关键词拼接在一起查询不合理，故把关键字进行分类.现分三类，开三个线程，每个线程查一类关键字，
+     * 把多线程的结果汇总以后，返回前端
+     * 逻辑为： 每个省份，每一类关键词 返回20条数据，即每个省份共返回60条数据
+     */
     @GetMapping("/countrySerchHot")
-    public R countrySerchHot(){
+    public R testMutiSerchHot() {
+        long startTime = System.currentTimeMillis();
         List<String> citys = CommonConstant.getCityList();
+        List<String> keywords = CommonConstant.keywordList();
         List<HotPower> totalHotPowerList = new ArrayList<HotPower>();
-        KeywordsSerchRequest request = new KeywordsSerchRequest();
-        request.setKeywords("物流点|物流仓储");
-        request.setOutput("json");
-        request.setOffset("20");
-        request.setPage("1");
-        for(String city : citys){
-            request.setCity(city);
-            String result = gouldMapService.keywordsSerch(request);
-            KeywordsSerchResponse keywordsSerch = JSON.parseObject(result, KeywordsSerchResponse.class);
-            if(keywordsSerch.getStatus().equals(1)){
-                List<KeywordsSerchResponse.Poi> temPois = keywordsSerch.getPois();
-                if(temPois != null && temPois.size() > 0){
-                    for(KeywordsSerchResponse.Poi tem : temPois){
-                        String location = tem.getLocation();
-                        if(StringUtils.isNotBlank(location)){
-                            String[] locaArr = location.split(",");
-                            HotPower hotPower = new HotPower();
-                            hotPower.setLng(locaArr[0]);
-                            hotPower.setLat(locaArr[1]);
-                            hotPower.setCount(0);
-                            totalHotPowerList.add(hotPower);
+        final CountDownLatch countDownLatch = new CountDownLatch(3);
+
+        for (int i = 0; i < 3; i++) {
+            final int num = i;
+            new Thread(new Runnable() {
+                public void run() {
+                    long startTime4Thread = System.currentTimeMillis();
+                    try {
+                        String temKey = keywords.get(num);
+                        KeywordsSerchRequest request = new KeywordsSerchRequest();
+                        request.setOutput("json");
+                        request.setOffset("20");
+                        request.setPage("1");
+                        request.setKeywords(temKey);
+                        for (String city : citys) {
+                            request.setCity(city);
+                            String result = gouldMapService.keywordsSerch(request);
+                            KeywordsSerchResponse keywordsSerch = JSON.parseObject(result, KeywordsSerchResponse.class);
+                            if (keywordsSerch.getStatus().equals(1)) {
+                                List<KeywordsSerchResponse.Poi> temPois = keywordsSerch.getPois();
+                                if (temPois != null && temPois.size() > 0) {
+                                    for (KeywordsSerchResponse.Poi tem : temPois) {
+                                        String location = tem.getLocation();
+                                        if (StringUtils.isNotBlank(location)) {
+                                            String[] locaArr = location.split(",");
+                                            HotPower hotPower = new HotPower();
+                                            hotPower.setLng(locaArr[0]);
+                                            hotPower.setLat(locaArr[1]);
+                                            hotPower.setCount(0);
+                                            totalHotPowerList.add(hotPower);
+                                        }
+                                    }
+                                }
+                                log.info(city + "--- 查询出的记录总数=" + keywordsSerch.getPois().size());
+                            }
                         }
-
-
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    countDownLatch.countDown();
                 }
-                log.info(city + "--- 查询出的记录总数=" + keywordsSerch.getPois().size());
-            }
+            }).start();
         }
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         log.info("--- 查询出的记录总数=" + totalHotPowerList.size());
+        long endTime = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+        log.info("--- 运行总时间=" + totalTime);
         return new R(totalHotPowerList);
     }
-
 
     //ID查询
     //  通过POI ID，查询某个POI详情
@@ -183,6 +310,5 @@ public class GouldMapController {
 
         return new R(detailInfo.getStatus(),new Throwable(detailInfo.getInfo()));
     }
-
 
 }
