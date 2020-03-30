@@ -25,7 +25,7 @@ public class HttpsUtil {
      */
     public static String doGet(String urlString){
         String result=null;
-        log.info("----- HttpsUtil.doGet 请求地址为=" + urlString);
+        //log.info("----- HttpsUtil.doGet 请求地址为=" + urlString);
         try {
             CloseableHttpClient httpClient= HttpClients.createDefault();
             //创建GET对象

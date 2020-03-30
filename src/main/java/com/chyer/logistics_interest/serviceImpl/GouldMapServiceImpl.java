@@ -13,7 +13,8 @@ public class GouldMapServiceImpl implements GouldMapService {
     @Value("${gould.map.key}")
     private String gaode_key;
 
-    private final String GOULD_KEY = "d73af80e885c11bd5bf046a0e612225e";
+    //private final String GOULD_KEY = "d73af80e885c11bd5bf046a0e612225e";
+    private final String GOULD_KEY = "3132b358f59015ccee073e511af5a5ae";
 
     /**
      * https://restapi.amap.com/v3/ip?parameters

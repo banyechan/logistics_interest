@@ -145,37 +145,42 @@ public class GouldMapController {
         List<String> keywords = CommonConstant.keywordList();
         List<String> citys = CommonConstant.getCityList();
         List<KeywordsSerchResponse.Poi> totalPois = new ArrayList<KeywordsSerchResponse.Poi>();
-        final CountDownLatch countDownLatch = new CountDownLatch(3); //开3个线程
+        final CountDownLatch countDownLatch = new CountDownLatch(10); //开10个线程
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 10; i++) {
             final int num = i;
-            new Thread(new Runnable() {
+            new Thread(new Runnable() {   //创建新的线程
                 public void run() {
+                    long startTime4Thread = System.currentTimeMillis();
                     try {
-                        String temKey = keywords.get(num);
-                        KeywordsSerchRequest request = new KeywordsSerchRequest();
-                        request.setOutput("json");
-                        request.setOffset("20");
-                        request.setPage("1");
-                        request.setKeywords(temKey);
-                        for (String city : citys) {
-                            request.setCity(city);
-                            String result = gouldMapService.keywordsSerch(request);
-                            KeywordsSerchResponse keywordsSerch = JSON.parseObject(result, KeywordsSerchResponse.class);
-                            if (keywordsSerch.getStatus().equals(1)) {
-                                totalPois.addAll(keywordsSerch.getPois());
-                                log.info(city + "--- 查询出的记录总数=" + keywordsSerch.getPois().size());
+                        for (String key : keywords) {  //循环 关键词
+                            KeywordsSerchRequest request = new KeywordsSerchRequest();
+                            request.setOutput("json");
+                            request.setOffset("20");
+                            request.setPage("1");
+                            request.setKeywords(key);
+                            for (int j = 0; j < 3; j++) {   //每个线程 每个关键词 查3个省  即每个线程共发9个请求
+                                String city = citys.get(3 * num + j);
+                                request.setCity(city);
+                                String result = gouldMapService.keywordsSerch(request);
+                                KeywordsSerchResponse keywordsSerch = JSON.parseObject(result, KeywordsSerchResponse.class);
+                                if (keywordsSerch.getStatus().equals(1)) {
+                                    totalPois.addAll(keywordsSerch.getPois());
+                                    log.info(city + "--- 查询出的记录总数=" + keywordsSerch.getPois().size());
+                                }
                             }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    countDownLatch.countDown();
+                    long endTime4Thread = System.currentTimeMillis();
+                    log.info(Thread.currentThread().getName() + "- 执行时间=" + (endTime4Thread - startTime4Thread));
+                    countDownLatch.countDown(); //每个线程启动后减1
                 }
             }).start();
         }
         try {
-            countDownLatch.await();
+            countDownLatch.await();  //等所有线程都执行结束后，再返回
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -240,42 +245,48 @@ public class GouldMapController {
         List<String> citys = CommonConstant.getCityList();
         List<String> keywords = CommonConstant.keywordList();
         List<HotPower> totalHotPowerList = new ArrayList<HotPower>();
-        final CountDownLatch countDownLatch = new CountDownLatch(3);
+        final CountDownLatch countDownLatch = new CountDownLatch(10); //10个线程
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 10; i++) {
             final int num = i;
-            new Thread(new Runnable() {
+            new Thread(new Runnable() { //创建新的线程
                 public void run() {
                     long startTime4Thread = System.currentTimeMillis();
                     try {
-                        String temKey = keywords.get(num);
-                        KeywordsSerchRequest request = new KeywordsSerchRequest();
-                        request.setOutput("json");
-                        request.setOffset("20");
-                        request.setPage("1");
-                        request.setKeywords(temKey);
-                        for (String city : citys) {
-                            request.setCity(city);
-                            String result = gouldMapService.keywordsSerch(request);
-                            KeywordsSerchResponse keywordsSerch = JSON.parseObject(result, KeywordsSerchResponse.class);
-                            if (keywordsSerch.getStatus().equals(1)) {
-                                List<KeywordsSerchResponse.Poi> temPois = keywordsSerch.getPois();
-                                if (temPois != null && temPois.size() > 0) {
-                                    for (KeywordsSerchResponse.Poi tem : temPois) {
-                                        String location = tem.getLocation();
-                                        if (StringUtils.isNotBlank(location)) {
-                                            String[] locaArr = location.split(",");
-                                            HotPower hotPower = new HotPower();
-                                            hotPower.setLng(locaArr[0]);
-                                            hotPower.setLat(locaArr[1]);
-                                            hotPower.setCount(0);
-                                            totalHotPowerList.add(hotPower);
+                        for (String key : keywords) {  //循环 关键词
+                            KeywordsSerchRequest request = new KeywordsSerchRequest();
+                            request.setOutput("json");
+                            request.setOffset("20");
+                            request.setPage("1");
+                            request.setKeywords(key);
+                            for (int j = 0; j < 3; j++) { //每个线程 每个关键词 查3个省  即每个线程共发9个请求
+                                String city = citys.get(3 * num + j);
+                                request.setCity(city);
+                                String result = gouldMapService.keywordsSerch(request);
+                                KeywordsSerchResponse keywordsSerch = JSON.parseObject(result, KeywordsSerchResponse.class);
+                                if (keywordsSerch.getStatus().equals(1)) {
+                                    List<KeywordsSerchResponse.Poi> temPois = keywordsSerch.getPois();
+                                    if (temPois != null && temPois.size() > 0) {
+                                        for (KeywordsSerchResponse.Poi tem : temPois) {
+                                            String location = tem.getLocation();
+                                            if (StringUtils.isNotBlank(location)) {
+                                                String[] locaArr = location.split(",");
+                                                HotPower hotPower = new HotPower();
+                                                hotPower.setLng(locaArr[0]);
+                                                hotPower.setLat(locaArr[1]);
+                                                hotPower.setCount(0);
+                                                totalHotPowerList.add(hotPower);
+                                            }
                                         }
                                     }
+                                    log.info(city + "--- 查询出的记录总数=" + keywordsSerch.getPois().size());
                                 }
-                                log.info(city + "--- 查询出的记录总数=" + keywordsSerch.getPois().size());
+
                             }
                         }
+                        long endTime4Thread = System.currentTimeMillis();
+                        log.info(Thread.currentThread().getName() + "- 执行时间=" + (endTime4Thread - startTime4Thread));
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
