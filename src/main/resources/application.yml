@@ -7,6 +7,13 @@ spring:
     name: logistics_interest
   resources:
     static-locations: classpath:/
+  # 数据源
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://127.0.0.1:3306/greenhouse_system?characterEncoding=utf8&useSSL=false
+
 
 baidu:
   map:
@@ -15,3 +22,12 @@ baidu:
 gould:
   map:
     key: d73af80e885c11bd5bf046a0e612225e
+
+
+
+
+# mybaits 模块配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.bandweaver.maxtunnelem.entity
+

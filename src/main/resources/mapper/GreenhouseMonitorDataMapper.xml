@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chyer.logistics_interest.mapper.GreenhouseMonitorDataMapper">
+    <resultMap id="BaseResultMap" type="com.chyer.logistics_interest.entity.GreenhouseMonitorData">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="greenhouse_id" property="greenhouseId" jdbcType="INTEGER"/>
+        <result column="airtemp" property="airtemp" jdbcType="DOUBLE"/>
+        <result column="airhumi" property="airhumi" jdbcType="DOUBLE"/>
+        <result column="soiltemp" property="soiltemp" jdbcType="DOUBLE"/>
+        <result column="soilhumi" property="soilhumi" jdbcType="DOUBLE"/>
+        <result column="co2" property="co2" jdbcType="DOUBLE"/>
+        <result column="sundata" property="sundata" jdbcType="DOUBLE"/>
+        <result column="datetime" property="datetime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, greenhouse_id, airtemp, airhumi, soiltemp, soilhumi, co2, sundata, datetime
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from greenhouse_monitor_data
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from greenhouse_monitor_data
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.chyer.logistics_interest.entity.GreenhouseMonitorData">
+    insert into greenhouse_monitor_data (id, greenhouse_id, airtemp, 
+      airhumi, soiltemp, soilhumi, 
+      co2, sundata, datetime
+      )
+    values (#{id,jdbcType=INTEGER}, #{greenhouseId,jdbcType=INTEGER}, #{airtemp,jdbcType=DOUBLE}, 
+      #{airhumi,jdbcType=DOUBLE}, #{soiltemp,jdbcType=DOUBLE}, #{soilhumi,jdbcType=DOUBLE}, 
+      #{co2,jdbcType=DOUBLE}, #{sundata,jdbcType=DOUBLE}, #{datetime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.chyer.logistics_interest.entity.GreenhouseMonitorData">
+        insert into greenhouse_monitor_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="greenhouseId != null">
+                greenhouse_id,
+            </if>
+            <if test="airtemp != null">
+                airtemp,
+            </if>
+            <if test="airhumi != null">
+                airhumi,
+            </if>
+            <if test="soiltemp != null">
+                soiltemp,
+            </if>
+            <if test="soilhumi != null">
+                soilhumi,
+            </if>
+            <if test="co2 != null">
+                co2,
+            </if>
+            <if test="sundata != null">
+                sundata,
+            </if>
+            <if test="datetime != null">
+                datetime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="greenhouseId != null">
+                #{greenhouseId,jdbcType=INTEGER},
+            </if>
+            <if test="airtemp != null">
+                #{airtemp,jdbcType=DOUBLE},
+            </if>
+            <if test="airhumi != null">
+                #{airhumi,jdbcType=DOUBLE},
+            </if>
+            <if test="soiltemp != null">
+                #{soiltemp,jdbcType=DOUBLE},
+            </if>
+            <if test="soilhumi != null">
+                #{soilhumi,jdbcType=DOUBLE},
+            </if>
+            <if test="co2 != null">
+                #{co2,jdbcType=DOUBLE},
+            </if>
+            <if test="sundata != null">
+                #{sundata,jdbcType=DOUBLE},
+            </if>
+            <if test="datetime != null">
+                #{datetime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.chyer.logistics_interest.entity.GreenhouseMonitorData">
+        update greenhouse_monitor_data
+        <set>
+            <if test="greenhouseId != null">
+                greenhouse_id = #{greenhouseId,jdbcType=INTEGER},
+            </if>
+            <if test="airtemp != null">
+                airtemp = #{airtemp,jdbcType=DOUBLE},
+            </if>
+            <if test="airhumi != null">
+                airhumi = #{airhumi,jdbcType=DOUBLE},
+            </if>
+            <if test="soiltemp != null">
+                soiltemp = #{soiltemp,jdbcType=DOUBLE},
+            </if>
+            <if test="soilhumi != null">
+                soilhumi = #{soilhumi,jdbcType=DOUBLE},
+            </if>
+            <if test="co2 != null">
+                co2 = #{co2,jdbcType=DOUBLE},
+            </if>
+            <if test="sundata != null">
+                sundata = #{sundata,jdbcType=DOUBLE},
+            </if>
+            <if test="datetime != null">
+                datetime = #{datetime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.chyer.logistics_interest.entity.GreenhouseMonitorData">
+    update greenhouse_monitor_data
+    set greenhouse_id = #{greenhouseId,jdbcType=INTEGER},
+      airtemp = #{airtemp,jdbcType=DOUBLE},
+      airhumi = #{airhumi,jdbcType=DOUBLE},
+      soiltemp = #{soiltemp,jdbcType=DOUBLE},
+      soilhumi = #{soilhumi,jdbcType=DOUBLE},
+      co2 = #{co2,jdbcType=DOUBLE},
+      sundata = #{sundata,jdbcType=DOUBLE},
+      datetime = #{datetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
